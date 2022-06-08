@@ -1,23 +1,62 @@
-import logo from './logo.svg';
 import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
+import { addTodo,completeTodo,deleteTodo, editTodo } from './Pages/Action';
+
 
 function App() {
+
+  const dispatch =useDispatch()
+  const todo = useSelector((state=>state.todos))
+  const ref = useRef()
+
+  const handleClick=()=>{
+    const value = ref.current.value;
+      dispatch(addTodo(
+          {
+            value:value,
+            isCompleted:false
+          }
+      ))
+    console.log(value)
+    
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input
+      ref={ref}
+      placeholder='Enter New Todo'
+      />
+      <button onClick={handleClick}>Add</button>
+      <br></br>
+      <br></br>
+
+      {todo.map(todo=>(
+
+        <div key={todo.id} style={{color:todo.isCompleted?"green":'red'}}>
+
+          {todo.value}
+
+          <button onClick={()=>
+          dispatch(
+            deleteTodo({id:todo.id})
+          )}>X</button>
+
+          <button onClick={()=>
+          dispatch(
+            completeTodo({id:todo.id})
+          )}>done</button>
+          
+          <button onClick={()=>
+          dispatch(
+            editTodo({id:todo.id})
+          )}>edit</button>
+          
+         
+
+        </div>
+
+      ))}
     </div>
   );
 }
